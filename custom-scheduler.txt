@@ -1,0 +1,72 @@
+﻿Create Additional scheduler 
+
+
+Copy the scheduler from the manifest file and make changes in 4 different places
+
+
+leader-elect=false # change true to false
+port=10253     # add this port
+scheduler-name=my-scheduler    # add the scheduler name
+
+
+And also change .metadata.name to my-scheduler
+
+
+Get a free port that can be used - look for unused one (here it is 10253)
+
+
+master $ netstat -netulp | grep 10251
+tcp6       0      0 :::10251                :::*                    LISTEN      0          27541       4186/kube-scheduler
+
+
+master $ netstat -netulp | grep 10252
+tcp6       0      0 :::10252                :::*                    LISTEN      0          27924       4195/kube-controlle
+
+
+
+
+master $ netstat -netulp | grep 10253   # this returns nothing, so it is free
+
+
+master $ cd /etc/kubernetes/manifests
+master $ cp kube-scheduler.yaml my-scheduler.yml
+
+
+metadata:
+  labels:
+    component: my-scheduler  #1
+    tier: control-plane
+  name: my-scheduler  #2
+  namespace: kube-system
+
+
+spec:
+  containers:
+  - command:
+    - kube-scheduler
+    - --authentication-kubeconfig=/etc/kubernetes/scheduler.conf
+    - --authorization-kubeconfig=/etc/kubernetes/scheduler.conf
+    - --bind-address=127.0.0.1
+    - --kubeconfig=/etc/kubernetes/scheduler.conf
+    - --leader-elect=false                           #3 edit, make it false
+    - --port=10253                                  #4 add
+    - --scheduler-name=my-scheduler                #5 add
+    - --secure-port=0                                #6 add
+Create a pod and use the custom-scheduler to schedule the pod
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  -  image: nginx
+     name: nginx
+  schedulerName: my-scheduler
+
+
+Verify that pod has been scheduled by your desired scheduler
+
+
+$ kubectl get events -o wide| grep -i my-scheduler
