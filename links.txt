@@ -1,0 +1,10 @@
+https://katacoda.com/courses/kubernetes/playground
+https://kubernetes.io/docs/tutorials/kubernetes-basics/create-cluster/cluster-interactive/
+
+Few practices - https://github.com/dgkanatsios/CKAD-exercises.git
+https://killer.sh/cka?fbclid=IwAR1t4xQ6wBWu8zzzogq6NjUaDrO2dExt09tv19hAd1oYkPDynajkpwQc8jY
+
+https://github.com/mmumshad/kubernetes-the-hard-way
+
+https://github.com/kunchalavikram1427/Kubernetes_public
+https://github.com/kunchalavikram1427/Docker_public
